@@ -1,0 +1,57 @@
+if(Boolean.valueOf(IS_APPLICATION)){
+    apply plugin: 'com.android.application'
+}else{
+    apply plugin: 'com.android.library'
+}
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        if(Boolean.valueOf(IS_APPLICATION)){
+            applicationId "com.epsit.member"
+        }
+        minSdkVersion MIN_SDK_VERSION.toInteger()
+        targetSdkVersion TARGET_SDK_VERSION.toInteger()
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        if(Boolean.valueOf(IS_APPLICATION)) { //独立运行的app，用到了编译时框架，所以要下面的配置
+            javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets{
+        main{
+            if(Boolean.valueOf(IS_APPLICATION)){ //非library，就是有自己的manifest.xml,并且可以独立运行
+                manifest.srcFile 'src/main/AndroidManifest.xml'
+            }else{ //是作为library添加到app
+                manifest.srcFile 'src/main/manifest/AndroidManifest.xml'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation APP_COMPAT
+    implementation APP_CONSTRAINTLAYOUT
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation project(path: ':arouter')
+    implementation project(path: ':annotation')
+    implementation project(path: ':annotation_compiler')
+
+}

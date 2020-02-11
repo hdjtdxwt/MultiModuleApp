@@ -1,0 +1,2 @@
+include ':app', ':member',':login', ':annotation', ':annotation_compiler', ':arouter'
+rootProject.name='MultiModuleApp'
