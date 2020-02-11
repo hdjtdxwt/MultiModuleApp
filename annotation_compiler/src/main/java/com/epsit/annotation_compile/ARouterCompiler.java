@@ -21,6 +21,11 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.JavaFileObject;
 
+/**
+ * 自己花费时间最多的是这个类，报错了是在编译时，然后不会暂停，导致的结果就是辅助类没有生成，
+ * 最后自己发现的问题仅仅是 JavaFileObject sourceFile = filer.createSourceFile(xxx); 参数多了一个分号导致报错了，后面的代码就没有执行了
+ * 自己决定如果要调试的话，可以看是否生成了目标文件之前的代码作为一块，分块调试，后面的代码就看生成的类的内容
+ */
 //注解处理器，这个是专门处理ARouter注解的
 @AutoService(Processor.class) //这里是注册的操作
 public class ARouterCompiler extends AbstractProcessor {
@@ -65,7 +70,9 @@ public class ARouterCompiler extends AbstractProcessor {
             //这个是生成的类名，为了在合并后不会有重名类存在而加了一个时间戳
             String activityUtilName = "ActivityUtil"+System.currentTimeMillis();
             try {
-                JavaFileObject sourceFile = filer.createSourceFile("com.epsit.util."+activityUtilName+";");
+                //JavaFileObject sourceFile = filer.createSourceFile("com.epsit.util."+activityUtilName+";");
+                //上面这种写法坑了自己好久！！！，可以一点一点的来，先生成文件测试下，在生成类名和继承部分
+                JavaFileObject sourceFile = filer.createSourceFile("com.epsit.util."+activityUtilName);
                 writer = sourceFile.openWriter();
                 //所有的ARouter的跳转的类都会生成在这个目录下，所以有根据包名获取包下所有类的需求
                 writer.write("package com.epsit.util;\n");
@@ -90,9 +97,10 @@ public class ARouterCompiler extends AbstractProcessor {
                         "\n" +
                         "    @Override\n" +
                         "    public Class getClassByKey(String key) {\n" +
-                        "        return ARouter.getInstance().getActivityByKey(key);\n" +
-                        "    }\n" +
-                        "}");
+                        "        return ARouter.getInstance().getActivityByKey(key);\n");
+
+                writer.write(  "    }\n");
+                writer.write( "}");
             } catch (Exception e) {
                 e.printStackTrace();
             }finally {
@@ -107,6 +115,6 @@ public class ARouterCompiler extends AbstractProcessor {
         }else{
             System.out.println("没有数据，size=0");
         }
-        return false;
+        return true;
     }
 }

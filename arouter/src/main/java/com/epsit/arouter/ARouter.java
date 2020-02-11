@@ -37,7 +37,7 @@ public class ARouter {
         this.context = context;
         //下面的方法是获取当前模块下这个包下的类列表
         //根据一个包名，获取所有这个包名下的类，这个包名是apt生成的,ActivityUtilxxxx.java，都在这个包下，名字加了时间戳
-        List<Class<?>> classNames = Commons.getClasssFromPackage("com.epsit.util");
+        List<Class> classNames = getClasssFromPackage("com.epsit.util");
 
         Log.e(TAG,"init classNames.size="+(classNames!=null ? classNames.size() : "-0"));
         for (Class aClass: classNames ) {
@@ -66,7 +66,7 @@ public class ARouter {
 
     }
 
-    private Class getActivityByKey(String key){
+    public Class getActivityByKey(String key){
         Log.e("getByKey","size="+map.size()+"  param:"+key);
         return map.get(key);
     }
@@ -77,6 +77,21 @@ public class ARouter {
             if(clazz!=null ){
                 Intent intent = new Intent();
                 intent.setClass(context ,clazz);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//默认是这个模式
+                context.startActivity(intent);
+            }else{
+                Log.e("startActivity","clazz!=null ? "+(clazz!=null ));
+                Log.e("startActivity","或者 目标不是activity子类："+ (clazz!=null ? clazz.getName():""));
+            }
+        }
+    }
+    public void startActivity(String key, int flags){
+        if(key!=null && !key.trim().equals("")){
+            Class clazz = getActivityByKey(key);
+            if(clazz!=null ){
+                Intent intent = new Intent();
+                intent.setClass(context ,clazz);
+                intent.addFlags(flags);
                 context.startActivity(intent);
             }else{
                 Log.e("startActivity","clazz!=null ? "+(clazz!=null ));
@@ -97,4 +112,31 @@ public class ARouter {
         }
     }
 
+    public List<Class> getClasssFromPackage(String packageName){
+        List<Class>classList = new ArrayList<>();
+        String path = null;
+        DexFile dexFile = null;
+        try {
+            path = context.getPackageManager().getApplicationInfo(context.getPackageName(), 0).sourceDir;
+            dexFile = new DexFile(path);
+            Enumeration entries = dexFile.entries();
+            while (entries.hasMoreElements()) {
+                String name = (String) entries.nextElement();
+                if (name.startsWith(packageName)) {// 判断类的包名是否符合
+                    classList.add(Class.forName(name));
+                }
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (dexFile != null) {
+                    dexFile.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return classList;
+    }
 }

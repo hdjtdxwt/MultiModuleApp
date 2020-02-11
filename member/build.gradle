@@ -17,9 +17,9 @@ android {
         versionName VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        if(Boolean.valueOf(IS_APPLICATION)) { //独立运行的app，用到了编译时框架，所以要下面的配置
+        //if(Boolean.valueOf(IS_APPLICATION)) { //独立运行的app，用到了编译时框架，所以要下面的配置
             javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
-        }
+        //}
 
     }
 

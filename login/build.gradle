@@ -17,7 +17,7 @@ android {
         versionName VERSION_NAME
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        //javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
 
     }
 
@@ -46,7 +46,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-    implementation project(path: ':annotation_compiler')
-    implementation project(path: ':annotation')
     implementation project(path: ':arouter')
+    implementation project(path: ':annotation')
+    implementation project(path: ':annotation_compiler')
 }
