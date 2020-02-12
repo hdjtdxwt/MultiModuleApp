@@ -5,21 +5,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 
 import com.epsit.annotation.BuildPath;
 import com.epsit.arouter.ARouter;
 import com.epsit.multimoduleapp.ModuleApplication;
 import com.epsit.multimoduleapp.R;
 
+
 @BuildPath("main/flash")
-public class FlashActivity extends AppCompatActivity {
+public class FlashActivity extends AppCompatActivity implements View.OnClickListener {
     Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash);
-        handler.postDelayed(new Runnable() {
+        findViewById(R.id.flash_click).setOnClickListener(this);
+        Log.e("FlashActivity", "flashActivity的taskId:"+getTaskId() );
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 //startActivity(new Intent(ModuleApplication.getInstance(), MainActivity.class));//拿不到外部module的MainActivity或者其他的activity的class
@@ -31,6 +41,6 @@ public class FlashActivity extends AppCompatActivity {
                 //启动外部module的activity需要设置NEW_TASK的模式不然会报错的，所以尽量用默认的没有FLAG的哪个方法
                 //还没有试启动service的情况
             }
-        },2000);
+        });
     }
 }

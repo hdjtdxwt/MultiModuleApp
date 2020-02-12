@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 
 import com.epsit.annotation.BuildPath;
@@ -23,7 +24,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         findViewById(R.id.login_dump_member).setOnClickListener(this);
         findViewById(R.id.login_dump_main).setOnClickListener(this);
-
+        Log.e("LoginActivity", "LoginActivity 的taskId:"+getTaskId() );
 
 
     }

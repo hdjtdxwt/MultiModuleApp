@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.epsit.member">
 
-    <application>
+    <application android:taskAffinity="com.epsit">
         <activity android:name=".MemberMainActivity"></activity>
     </application>
 

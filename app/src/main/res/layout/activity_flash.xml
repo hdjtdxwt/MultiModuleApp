@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.FlashActivity">
-    <TextView
-        android:text="闪屏页，2s后去到主页面"
+    <Button
+        android:id="@+id/flash_click"
+        android:text="闪屏页，点击后去到主页面"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>
